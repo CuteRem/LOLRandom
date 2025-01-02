@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>队伍位置随机分配</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        .selection-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .player-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .player-option:hover {
+            background: #e9ecef;
+        }
+
+        .player-option input {
+            margin-right: 10px;
+        }
+
+        .button-area {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .result-area {
+            margin-top: 30px;
+        }
+
+        .result-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            .selection-area {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>队伍位置随机分配</h1>
+        
+        <div class="selection-area">
+            <label class="player-option">
+                <input type="checkbox" name="player" value="李景巍"> 李景巍
+            </label>
+            <label class="player-option">
+                <input type="checkbox" name="player" value="梁炎"> 梁炎
+            </label>
+            <label class="player-option">
+                <input type="checkbox" name="player" value="宁薛东"> 宁薛东
+            </label>
+            <label class="player-option">
+                <input type="checkbox" name="player" value="樊鹏"> 樊鹏
+            </label>
+            <label class="player-option">
+                <input type="checkbox" name="player" value="黄鹏举"> 黄鹏举
+            </label>
+            <label class="player-option">
+                <input type="checkbox" name="player" value="金纪凯"> 金纪凯
+            </label>
+        </div>
+
+        <div class="button-area">
+            <button onclick="randomize()">随机分配位置</button>
+        </div>
+
+        <div class="result-area" id="result">
+            <!-- 结果将在这里显示 -->
+        </div>
+    </div>
+
+    <script>
+        function randomize() {
+            const positions = ['上路', '打野', '中路', 'AD', '辅助'];
+            const selectedPlayers = Array.from(document.querySelectorAll('input[name="player"]:checked'))
+                .map(input => input.value);
+
+            if (selectedPlayers.length !== 5) {
+                alert('请选择恰好5名选手！');
+                return;
+            }
+
+            // 打乱选手顺序
+            const shuffledPlayers = [...selectedPlayers].sort(() => Math.random() - 0.5);
+            
+            // 清空结果区域
+            const resultArea = document.getElementById('result');
+            resultArea.innerHTML = '';
+
+            // 显示结果
+            positions.forEach((position, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.innerHTML = `
+                    <span>${position}:</span>
+                    <span>${shuffledPlayers[index]}</span>
+                `;
+                resultArea.appendChild(resultItem);
+            });
+        }
+
+        // 监听复选框变化，确保只能选择5个
+        document.querySelectorAll('input[name="player"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const checkedCount = document.querySelectorAll('input[name="player"]:checked').length;
+                if (checkedCount > 5) {
+                    this.checked = false;
+                    alert('最多只能选择5名选手！');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
